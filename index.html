@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-cloak>
+
+  <head>
+    <link data-require="bootstrap@*" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
+    <link data-require="bootstrap-css@*" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
+    <script data-require="angular.js@1.5.x" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js" data-semver="1.5.8"></script>
+    <script data-require="jquery@*" data-semver="2.1.4" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="script.js"></script>
+  </head>
+
+  <body ng-controller="mainCtrl as vm">
+    <div class="container" align="center">
+      <h1>Krossover Player</h1>
+      <video controls ng-show="!isEmpty(vm.videoUrl)" autoplay="autoplay" preload="auto">
+          <source ng-src="{{vm.trustAsResourceUrl(vm.videoUrl)}}" data-original="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4">
+      </video>
+      <table class="table">
+        <tr>
+          <td></td>
+          <td><input type="text" class="form-control" ng-model="vm.newClip.name" placeholder="Clip name"></td>
+          <td><input type="text" class="form-control" ng-model="vm.newClip.startTime" placeholder="Start time"></td>
+          <td><input type="text" class="form-control" ng-model="vm.newClip.endTime" placeholder="End time"></td>
+          <td></td>
+          <td><button type="button" class="btn btn-info" ng-click="vm.AddClip()">Add New Clip</button></td>
+        </tr>
+      </table>
+      <hr>
+      <table class="table">
+        <tr>
+          <th>Play clip</th>
+          <th>Clip name</th>
+          <th>Start time</th>
+          <th>End time</th>
+          <th>Action</th>
+          <th>Delete</th>
+        </tr>
+        <tr>
+        <tr>
+          <td><button type="button" class="btn btn-danger" ng-click="vm.defaultClip.Play()"><i class="fa fa-play" aria-hidden="true"></i></button></td>
+          <td>{{vm.defaultClip.name}}</td>
+          <td>{{vm.defaultClip.startTime}}</td>
+          <td>{{vm.defaultClip.endTime}}</td>
+          <td/>
+          <td/>
+        </tr>
+        </tr>
+        <tr ng-repeat="clip in vm.clips">
+          <td><button type="button" class="btn btn-danger"  ng-click="clip.Play()"><i class="fa fa-play" aria-hidden="true"></i></button></td>
+          <td>{{clip.name}}</td>
+          <td>{{clip.startTime}}</td>
+          <td>{{clip.endTime}}</td>
+          <td><button type="button" class="btn btn-warning">Edit</button></td>
+          <td><button type="button" class="btn btn-default" ng-click="vm.DeleteClip(clip)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+        </tr>
+      </table>
+    </div>    
+  </body>
+</html>
