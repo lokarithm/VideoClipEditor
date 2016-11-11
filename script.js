@@ -2,12 +2,14 @@
 var myApp = angular.module('myApp', []);
 
 // Create the controller
-myApp.controller('mainCtrl', function ($sce, $scope) {
+myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   var defaultVideoUrl='http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4';
   var video=$('video');
   var vm = this;
+  vm.trustAsResourceUrl = $sce.trustAsResourceUrl;
   vm.clips=[];
   vm.isEdit=false;
+  vm.tickInterval = 1000;
 
   /**
    * Concatenate the baseUrl with startTime and endTime.
@@ -70,6 +72,15 @@ myApp.controller('mainCtrl', function ($sce, $scope) {
   vm.AddClip = function(){
     if(vm.EditingClip.Validation()){
       vm.clips.push(angular.copy(vm.EditingClip));
+      var clipsCount = vm.clips.length;
+      
+      if(vm.clips && clipsCount == 1){
+        vm.defaultClip.nextClip = vm.clips[clipsCount-1]
+      }
+      else{
+        vm.clips[clipsCount-2].nextClip = vm.clips[clipsCount-1];
+      }
+
       vm.ResetEditingClip();
     }    
   }
@@ -89,6 +100,7 @@ myApp.controller('mainCtrl', function ($sce, $scope) {
     this.name=name;
     this.startTime=startTime;
     this.endTime=endTime;
+    this.nextClip=null;
     this.errors=[];
   };
 
@@ -96,9 +108,26 @@ myApp.controller('mainCtrl', function ($sce, $scope) {
    * Play select clip's fragment
    */
   Clip.prototype.Play = function(){
-    vm.videoUrl=vm.formatUrl(defaultVideoUrl,this.startTime,this.endTime);
+    var me = this;
+    vm.videoUrl=vm.formatUrl(defaultVideoUrl,me.startTime,me.endTime);
     video.load();
-    video[0].play();
+
+    var p = new Promise(function(resolve, reject) {
+        video[0].play();
+        resolve();
+    });
+    
+    p.then(function(){
+      
+      if(me.nextClip != null){
+        var playTime = $timeout(function () {
+            me.nextClip.Play();
+            clearInterval(playTime);
+        },((me.endTime-me.startTime)*1000)+3000);
+
+        $timeout(playTime, vm.tickInterval);
+      }
+    });
   }
 
   /**
@@ -155,14 +184,14 @@ myApp.controller('mainCtrl', function ($sce, $scope) {
 
   vm.EditingClip=new Clip();
   vm.defaultClip=new Clip('Full Video',0,52);
+  vm.videoUrl = vm.formatUrl(defaultVideoUrl,vm.defaultClip.startTime,vm.defaultClip.endTime);
 
   var testClip1=new Clip('TestClip1',6,7);
   var testClip2=new Clip('TestClip2',40,41);
-  var testClip2=new Clip('TestClip2',49,52);
-  
-  vm.videoUrl = vm.formatUrl(defaultVideoUrl,vm.defaultClip.startTime,vm.defaultClip.endTime);
 
-  vm.trustAsResourceUrl = $sce.trustAsResourceUrl;
+  vm.defaultClip.nextClip=testClip1;
+  testClip1.nextClip = testClip2;
+  
   vm.clips.push(testClip1);
   vm.clips.push(testClip2); 
 
