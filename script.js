@@ -11,6 +11,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.isEdit=false;
   vm.tickInterval = 1000;
   vm.EditModeOn = true;
+  vm.tagFilter = '';
 
   /**
    * Concatenate the baseUrl with startTime and endTime.
@@ -31,6 +32,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     vm.isEdit=true;
     vm.EditingClip = angular.copy(clip);
     vm.EditingClip.id = clip.id;
+    vm.EditingClip.tags = clip.tags;
   }
 
   /**
@@ -51,6 +53,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
           value.name = vm.EditingClip.name;
           value.startTime = vm.EditingClip.startTime;
           value.endTime = vm.EditingClip.endTime;
+          value.tags = vm.EditingClip.tags;
         }
       });
       vm.isEdit=false;
@@ -111,6 +114,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     this.startTime=startTime;
     this.endTime=endTime;
     this.nextClip=null;
+    this.tags='';
     this.errors=[];
   };
 
@@ -211,6 +215,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
         angular.forEach(initData,function(value, index){
           var tempClip = new Clip(value.name,value.startTime,value.endTime);
           tempClip.id = value.id;
+          tempClip.tags = value.tags;
           
           vm.clips.push(tempClip);
           if(vm.clips.length > 1){

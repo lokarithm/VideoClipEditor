@@ -13,7 +13,7 @@
 
   <body ng-controller="mainCtrl as vm">
     <div class="container" align="center">
-      <h1>Krossover Player</h1>
+      <h1>Video Clips Editors</h1>
       <video controls ng-show="!isEmpty(vm.videoUrl)">
           <source ng-src="{{vm.trustAsResourceUrl(vm.videoUrl)}}" data-original="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4">
       </video>
@@ -30,6 +30,7 @@
           <td><input type="text" class="form-control" ng-model="vm.EditingClip.name" placeholder="Clip name" required></td>
           <td><input type="number" class="form-control" ng-model="vm.EditingClip.startTime" placeholder="Start time" required></td>
           <td><input type="number" class="form-control" ng-model="vm.EditingClip.endTime" placeholder="End time" required></td>
+          <td><input type="text" class="form-control" ng-model="vm.EditingClip.tags" placeholder="Tags" required></td>
           <td ng-if="!vm.isEdit">
             <button type="button" class="btn btn-info" ng-click="vm.AddClip()">Add New Clip</button>
           </td>
@@ -40,12 +41,22 @@
         </tr>
       </table>
       <hr ng-if="vm.EditModeOn">
+          <div class="row">
+          <div class="col-lg-6 pull-right">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+              </span>
+              <input type="text" class="form-control" ng-model="vm.tagFilter.tags" placeholder="Filter tags">
+            </div>
+          </div>
       <table class="table">
         <tr>
           <th>Play clip</th>
           <th>Clip name</th>
           <th>Start time</th>
           <th>End time</th>
+          <th>Tags</th>
           <th ng-if="vm.EditModeOn">Action</th>
           <th ng-if="vm.EditModeOn">Delete</th>
         </tr>
@@ -55,15 +66,17 @@
           <td>{{vm.defaultClip.name}}</td>
           <td>{{vm.defaultClip.startTime}}</td>
           <td>{{vm.defaultClip.endTime}}</td>
+          <td>{{vm.defaultClip.tags}}</td>
           <td ng-if="vm.EditModeOn"/>
           <td ng-if="vm.EditModeOn"/>
         </tr>
         </tr>
-        <tr ng-repeat="clip in vm.clips">
+        <tr ng-repeat="clip in vm.clips | filter:vm.tagFilter">
           <td><button type="button" class="btn btn-danger"  ng-click="clip.Play()"><i class="fa fa-play" aria-hidden="true"></i></button></td>
           <td>{{clip.name}}</td>
           <td>{{clip.startTime}}</td>
           <td>{{clip.endTime}}</td>
+          <td>{{clip.tags}}</td>
           <td ng-if="vm.EditModeOn"><button type="button" class="btn btn-warning" ng-click="vm.EditClip(clip)">Edit</button></td>
           <td ng-if="vm.EditModeOn"><button type="button" class="btn btn-default" ng-click="vm.DeleteClip(clip)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
         </tr>
