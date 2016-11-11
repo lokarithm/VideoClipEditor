@@ -14,17 +14,30 @@
   <body ng-controller="mainCtrl as vm">
     <div class="container" align="center">
       <h1>Krossover Player</h1>
-      <video controls ng-show="!isEmpty(vm.videoUrl)" autoplay="autoplay" preload="auto">
+      <!--<video controls ng-show="!isEmpty(vm.videoUrl)" autoplay="autoplay" preload="auto">-->
+      <video controls ng-show="!isEmpty(vm.videoUrl)">
           <source ng-src="{{vm.trustAsResourceUrl(vm.videoUrl)}}" data-original="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4">
       </video>
+      <hr>
+      <div class="alert alert-danger" role="alert" ng-if="vm.EditingClip.errors.length > 0">
+        <div align="left" ng-repeat="error in vm.EditingClip.errors">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        {{error}}
+        </div>
+      </div>
       <table class="table">
-        <tr>
+        <tr>          
           <td></td>
-          <td><input type="text" class="form-control" ng-model="vm.newClip.name" placeholder="Clip name"></td>
-          <td><input type="text" class="form-control" ng-model="vm.newClip.startTime" placeholder="Start time"></td>
-          <td><input type="text" class="form-control" ng-model="vm.newClip.endTime" placeholder="End time"></td>
-          <td></td>
-          <td><button type="button" class="btn btn-info" ng-click="vm.AddClip()">Add New Clip</button></td>
+          <td><input type="text" class="form-control" ng-model="vm.EditingClip.name" placeholder="Clip name" required></td>
+          <td><input type="number" class="form-control" ng-model="vm.EditingClip.startTime" placeholder="Start time" required></td>
+          <td><input type="number" class="form-control" ng-model="vm.EditingClip.endTime" placeholder="End time" required></td>
+          <td ng-if="!vm.isEdit">
+            <button type="button" class="btn btn-info" ng-click="vm.AddClip()">Add New Clip</button>
+          </td>
+          <td ng-if="vm.isEdit">
+            <button type="button" class="btn btn-success" ng-click="vm.SaveClip()">Save Edited Clip</button>
+          </td>
+          <td><button type="button" class="btn btn-info" ng-if="vm.isEdit" ng-click="vm.Cancel()">Cancel</button></td>
         </tr>
       </table>
       <hr>
@@ -52,7 +65,7 @@
           <td>{{clip.name}}</td>
           <td>{{clip.startTime}}</td>
           <td>{{clip.endTime}}</td>
-          <td><button type="button" class="btn btn-warning">Edit</button></td>
+          <td><button type="button" class="btn btn-warning" ng-click="vm.EditClip(clip)">Edit</button></td>
           <td><button type="button" class="btn btn-default" ng-click="vm.DeleteClip(clip)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
         </tr>
       </table>
