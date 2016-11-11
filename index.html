@@ -14,7 +14,6 @@
   <body ng-controller="mainCtrl as vm">
     <div class="container" align="center">
       <h1>Krossover Player</h1>
-      <!--<video controls ng-show="!isEmpty(vm.videoUrl)" autoplay="autoplay" preload="auto">-->
       <video controls ng-show="!isEmpty(vm.videoUrl)">
           <source ng-src="{{vm.trustAsResourceUrl(vm.videoUrl)}}" data-original="http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4">
       </video>

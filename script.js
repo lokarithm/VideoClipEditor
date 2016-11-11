@@ -41,6 +41,9 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     vm.ResetEditingClip();
   }
 
+  /**
+   * Save edited clip to vm.clips
+   */
   vm.SaveClip = function(){
     if(vm.EditingClip.Validation()){
       angular.forEach(vm.clips, function(value, key) {
@@ -88,6 +91,9 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     }    
   }
 
+  /**
+   * Reset editing clip to a brand new Clip object
+   */
   vm.ResetEditingClip = function(){
     delete vm.EditingClip;
     vm.EditingClip=new Clip();
@@ -108,6 +114,9 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     this.errors=[];
   };
 
+  /**
+   * Save list to local storage as JSON object
+   */
   vm.SaveDataToLocalStorage = function(){
     localStorage.setItem("myData", JSON.stringify(vm.clips));
   }
@@ -117,7 +126,6 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
    */
   Clip.prototype.Play = function(){
     var me = this;
-    console.log('me',me);
     vm.videoUrl=vm.formatUrl(defaultVideoUrl,me.startTime,me.endTime);
     video.load();
 
