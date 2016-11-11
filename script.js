@@ -61,25 +61,6 @@ myApp.controller('mainCtrl', function ($sce, $scope) {
     video[0].play();
   }
 
-  /**
-   * Play select clip's' fragment by jump to the start time without reloading the video
-   * TO-DO: fix bug of not able to play after playing a few clips back and forth
-   */
-  Clip.prototype.SmoothPlay = function(){
-    video[0].currentTime=this.startTime;
-    video[0].play();
-    var pauseTime=this.endTime;
-    var videoLength=Math.round(video[0].duration);
-
-    if(pauseTime < videoLength){
-      video[0].addEventListener("timeupdate", function(){
-          if(this.currentTime >= pauseTime) {
-              this.pause();
-          }
-      });
-    }  
-  }
-
   vm.newClip=new Clip();
   vm.defaultClip=new Clip('Full Video',0,52);
 
