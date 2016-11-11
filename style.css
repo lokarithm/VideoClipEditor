@@ -1,4 +1,4 @@
-/* Styles go here */
-#yourBidInput::before{
-    content: '$'
+.btn-black{
+    background-color:black;
+    color:darkgrey;
 }

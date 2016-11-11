@@ -25,7 +25,7 @@
         {{error}}
         </div>
       </div>
-      <table class="table">
+      <table class="table" ng-if="vm.EditModeOn">
         <tr>          
           <td></td>
           <td><input type="text" class="form-control" ng-model="vm.EditingClip.name" placeholder="Clip name" required></td>
@@ -40,15 +40,15 @@
           <td><button type="button" class="btn btn-info" ng-if="vm.isEdit" ng-click="vm.Cancel()">Cancel</button></td>
         </tr>
       </table>
-      <hr>
+      <hr ng-if="vm.EditModeOn">
       <table class="table">
         <tr>
           <th>Play clip</th>
           <th>Clip name</th>
           <th>Start time</th>
           <th>End time</th>
-          <th>Action</th>
-          <th>Delete</th>
+          <th ng-if="vm.EditModeOn">Action</th>
+          <th ng-if="vm.EditModeOn">Delete</th>
         </tr>
         <tr>
         <tr>
@@ -56,8 +56,8 @@
           <td>{{vm.defaultClip.name}}</td>
           <td>{{vm.defaultClip.startTime}}</td>
           <td>{{vm.defaultClip.endTime}}</td>
-          <td/>
-          <td/>
+          <td ng-if="vm.EditModeOn"/>
+          <td ng-if="vm.EditModeOn"/>
         </tr>
         </tr>
         <tr ng-repeat="clip in vm.clips">
@@ -65,10 +65,12 @@
           <td>{{clip.name}}</td>
           <td>{{clip.startTime}}</td>
           <td>{{clip.endTime}}</td>
-          <td><button type="button" class="btn btn-warning" ng-click="vm.EditClip(clip)">Edit</button></td>
-          <td><button type="button" class="btn btn-default" ng-click="vm.DeleteClip(clip)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+          <td ng-if="vm.EditModeOn"><button type="button" class="btn btn-warning" ng-click="vm.EditClip(clip)">Edit</button></td>
+          <td ng-if="vm.EditModeOn"><button type="button" class="btn btn-default" ng-click="vm.DeleteClip(clip)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
         </tr>
       </table>
+      <hr>
+      <button type="button" class="btn btn-black" ng-click="vm.EditModeOn=!vm.EditModeOn">Turn {{vm.EditModeOn ? 'Off' : 'On'}} Edit Mode</button>
     </div>    
   </body>
 </html>

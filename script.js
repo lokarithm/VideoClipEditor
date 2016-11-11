@@ -10,6 +10,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.clips=[];
   vm.isEdit=false;
   vm.tickInterval = 1000;
+  vm.EditModeOn = true;
 
   /**
    * Concatenate the baseUrl with startTime and endTime.
@@ -29,7 +30,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.EditClip = function(clip){
     vm.isEdit=true;
     vm.EditingClip = angular.copy(clip);
-    vm.EditingClip.$$hashKey = clip.$$hashKey;
+    vm.EditingClip.id = clip.id;
   }
 
   /**
@@ -43,7 +44,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.SaveClip = function(){
     if(vm.EditingClip.Validation()){
       angular.forEach(vm.clips, function(value, key) {
-        if(value.$$hashKey == vm.EditingClip.$$hashKey){
+        if(value.id == vm.EditingClip.id){
           value.name = vm.EditingClip.name;
           value.startTime = vm.EditingClip.startTime;
           value.endTime = vm.EditingClip.endTime;
@@ -51,6 +52,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
       });
       vm.isEdit=false;
       vm.ResetEditingClip();
+      vm.SaveDataToLocalStorage();
     }
   }
 
@@ -60,7 +62,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
    */
   vm.DeleteClip = function(clip){
     angular.forEach(vm.clips, function(value, key) {
-      if(value.$$hashKey == clip.$$hashKey){
+      if(value.id == clip.id){
         vm.clips.splice(key,1);
       }
     });
@@ -82,6 +84,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
       }
 
       vm.ResetEditingClip();
+      vm.SaveDataToLocalStorage();
     }    
   }
 
@@ -97,6 +100,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
    * @param {Number} endTime
    */
   var Clip = function(name, startTime, endTime){
+    this.id=vm.clips.length+1;
     this.name=name;
     this.startTime=startTime;
     this.endTime=endTime;
@@ -104,11 +108,16 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
     this.errors=[];
   };
 
+  vm.SaveDataToLocalStorage = function(){
+    localStorage.setItem("myData", JSON.stringify(vm.clips));
+  }
+
   /**
    * Play select clip's fragment
    */
   Clip.prototype.Play = function(){
     var me = this;
+    console.log('me',me);
     vm.videoUrl=vm.formatUrl(defaultVideoUrl,me.startTime,me.endTime);
     video.load();
 
@@ -186,13 +195,37 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.defaultClip=new Clip('Full Video',0,52);
   vm.videoUrl = vm.formatUrl(defaultVideoUrl,vm.defaultClip.startTime,vm.defaultClip.endTime);
 
-  var testClip1=new Clip('TestClip1',6,7);
-  var testClip2=new Clip('TestClip2',40,41);
+  // var testClip1=new Clip('TestClip1',6,7);
+  // var testClip2=new Clip('TestClip2',40,41);
 
-  vm.defaultClip.nextClip=testClip1;
-  testClip1.nextClip = testClip2;
+  // vm.defaultClip.nextClip=testClip1;
+  // testClip1.nextClip = testClip2;
   
-  vm.clips.push(testClip1);
-  vm.clips.push(testClip2); 
+  // vm.clips.push(testClip1);
+  // vm.clips.push(testClip2); 
+  
+  if (typeof(Storage) !== "undefined") {
+      var initData = $.parseJSON(localStorage.getItem("myData"));
+      if(initData && initData.length > 0){
+        
+        angular.forEach(initData,function(value, index){
+          var tempClip = new Clip(value.name,value.startTime,value.endTime);
+          tempClip.id = value.id;
+          
+          vm.clips.push(tempClip);
+          if(vm.clips.length > 1){
+            vm.clips[index-1].nextClip = vm.clips[index];
+          }
+          
+        });
+        vm.defaultClip.nextClip = vm.clips[0];
+      }
+      else{
+        vm.clips = [];
+      }
+  } else {
+      // Sorry! No Web Storage support..
+      alert('Sorry, localStorage is not supported in your browser.');
+  }
 
 });
