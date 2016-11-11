@@ -203,15 +203,7 @@ myApp.controller('mainCtrl', function ($sce, $scope,$timeout) {
   vm.defaultClip=new Clip('Full Video',0,52);
   vm.videoUrl = vm.formatUrl(defaultVideoUrl,vm.defaultClip.startTime,vm.defaultClip.endTime);
 
-  // var testClip1=new Clip('TestClip1',6,7);
-  // var testClip2=new Clip('TestClip2',40,41);
-
-  // vm.defaultClip.nextClip=testClip1;
-  // testClip1.nextClip = testClip2;
-  
-  // vm.clips.push(testClip1);
-  // vm.clips.push(testClip2); 
-  
+  // populate vm.clips from local storage data
   if (typeof(Storage) !== "undefined") {
       var initData = $.parseJSON(localStorage.getItem("myData"));
       if(initData && initData.length > 0){
